@@ -1,0 +1,28 @@
+name: "Maintenance Mode"
+
+on:
+  workflow_dispatch:
+    inputs:
+      maintenance_site:
+        required: true
+        type: string
+      maintenance_mode_enabled:
+        required: true
+        type: boolean
+
+jobs:
+    disable_maintenance:
+        if: ! inputs.maintenace_mode_enable
+        runs-on: ubuntu-latest
+        name: disable maintenance mode
+        steps:
+          - name: checkout code
+            uses: actions/checkout@v4
+
+    enable_maintenance:
+        if: inputs.maintenace_mode_enable
+        runs-on: ubuntu-latest
+        name: disable maintenance mode
+        steps:
+          - name: checkout code
+            uses: actions/checkout@v4
