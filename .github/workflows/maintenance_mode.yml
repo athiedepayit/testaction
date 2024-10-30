@@ -39,10 +39,10 @@ jobs:
                 echo "Disable Maintenance"
               fi
           - name: run if false
-            if: ${{ ! env.run }}
+            if: ${{ env.run == false }}
             run: |
               echo "false"
           - name: run if true
-            if: ${{ env.run }}
+            if: ${{ env.run == true }}
             run: |
               echo "true"
