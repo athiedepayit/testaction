@@ -30,7 +30,7 @@ jobs:
             if: ${{ env.run == 'true' }}
             run: |
               grep ${{ env.site }} ${{ env.file_path }} && exit 0 || echo "not found, adding"
-              sed -i ${{ env.file_path }} -e 's/patterns = \[/patterns = \[\n    "${{env.site}}.s3licensing.net/*",/''
+              sed -i ${{ env.file_path }} -e 's/patterns = \[/patterns = \[\n    "${{env.site}}.s3licensing.net/*",/'
 
           - name: Commit and push
             run: |
