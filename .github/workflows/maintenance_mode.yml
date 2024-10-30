@@ -34,4 +34,4 @@ jobs:
             run: |
               git config user.name 'github-actions'
               git config user.email 'actions@github.com'
-              git status | grep -i "working tree clean"
+              git status || grep -i "working tree clean" || git commit -am "maintenance for ${{ env.site }} ${{ env.run }}" && git push
