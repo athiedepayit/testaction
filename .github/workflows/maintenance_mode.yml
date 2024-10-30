@@ -30,3 +30,7 @@ jobs:
               else
                 echo "Disable Maintenance"
               fi
+          - name: This should not run
+            if: ${{ env.run }} == true
+            run: |
+              echo "hi"
