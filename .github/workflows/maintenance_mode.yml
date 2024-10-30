@@ -1,7 +1,7 @@
 name: "Maintenance Mode"
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       maintenance_site:
         required: true
@@ -30,7 +30,11 @@ jobs:
               else
                 echo "Disable Maintenance"
               fi
-          - name: This should not run
-            if: ${{ env.run }} == true
+          - name: run if false
+            if: ${{ ! env.run }}
             run: |
-              echo "hi"
+              echo "false"
+          - name: run if true
+            if: ${{ env.run }}
+            run: |
+              echo "true"
