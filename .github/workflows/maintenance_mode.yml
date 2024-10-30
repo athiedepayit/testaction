@@ -23,11 +23,10 @@ jobs:
             run: |
               echo "run: ${{ env.run }}"
               echo "site: ${{ env.site }}"
-          - name: disable maintenance mode
-            if: ${{ env.run }} == "false"
+          - name: set maintenance mode
             run: |
-              echo "Disable Maintenance"
-          - name: enable maintenance mode
-            if: ${{ env.run }} == "true"
-            run: |
-              echo "Enable Maintenance"
+              if [[ ${{ env.run }} == "true" ]];then
+                echo "Enable Maintenance"
+              else
+                echo "Disable Maintenance"
+              fi
