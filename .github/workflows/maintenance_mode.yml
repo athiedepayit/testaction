@@ -11,18 +11,20 @@ on:
         type: boolean
 
 jobs:
-    disable_maintenance:
-        if: ! inputs.maintenace_mode_enable
+    maintenance:
         runs-on: ubuntu-latest
-        name: disable maintenance mode
+        name: setmaintenance mode
+        env:
+          run: ${{ github.event.inputs.maintenance_mode_enabled }}
+          site : ${{ github.event.inputs.maintenance_site }}
         steps:
           - name: checkout code
             uses: actions/checkout@v4
-
-    enable_maintenance:
-        if: inputs.maintenace_mode_enable
-        runs-on: ubuntu-latest
-        name: disable maintenance mode
-        steps:
-          - name: checkout code
-            uses: actions/checkout@v4
+          - name: disable maintenance mode
+            if: ${{ env.run }} == "false"
+            run: |
+              echo "Disable Maintenance"
+          - name: enable maintenance mode
+            if: ${{ env.run }} == "true"
+            run: |
+              echo "Enable Maintenance"
