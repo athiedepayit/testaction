@@ -28,8 +28,8 @@ jobs:
 
           - name: Maintenance Mode On
             if: ${{ env.run == 'true' }}
+            shell: python
             run: |
-              #!/usr/bin/env python3
               f=open("${{env.file_path}}", "w")
               lines=f.readlines()
               patterns_index=lines.index("  patterns = [\n")
