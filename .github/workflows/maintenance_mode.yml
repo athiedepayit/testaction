@@ -9,6 +9,14 @@ on:
       maintenance_mode_enabled:
         required: true
         type: boolean
+  workflow_dispatch:
+    inputs:
+      maintenance_site:
+        required: true
+        type: string
+      maintenance_mode_enabled:
+        required: true
+        type: boolean
 
 jobs:
     maintenance:
