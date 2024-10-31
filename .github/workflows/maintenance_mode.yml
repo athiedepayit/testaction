@@ -16,7 +16,6 @@ jobs:
         env:
           run: ${{ github.event.inputs.maintenance_mode }}
           site : ${{ github.event.inputs.maintenance_site }}
-          file_path: "stuff/workers.tf"
         steps:
           - name: checkout code
             uses: actions/checkout@v4
@@ -24,23 +23,13 @@ jobs:
           - name: Maintenance Mode Off
             if: ${{ env.run == 'false' }}
             run: |
-              sed -i ${{ env.file_path }} -e 'd/${{ env.site }}'
+              python3 maint.py -e ${{ env.site }}
 
           - name: Maintenance Mode On
             if: ${{ env.run == 'true' }}
-            shell: python
             run: |
-              import os
-              os.system("pwd")
-              os.system("ls")
-              f=open("${{env.file_path}}", "w")
-              lines=f.readlines()
-              patterns_index=lines.index("  patterns = [\n")
-              site_add="   \"${{env.site}}.s3licensing.net/*\",\n"
-              lines.insert(patterns_index+1,site_add)
-              newtext=''.join(lines)
-              f.write(newtext)
-              f.close()
+              python3 maint.py -e ${{ env.site }} -m
+
 
           - name: Commit and push
             run: |
