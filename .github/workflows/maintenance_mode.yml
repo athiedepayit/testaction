@@ -45,4 +45,7 @@ jobs:
               git config user.name 'github-actions'
               git config user.email 'actions@github.com'
               git status | grep -i "working tree clean" && exit 0
+              branch=$(date +%Y-%m-%d_%H:%M:%S)_${{env.site }}_mm_${{ env.run }}
+              git checkout -b $branch
               git add . && git commit -m "maintenance for ${{ env.site }} ${{ env.run }}" && git push
+              gh pr create --base master --head $branch --title "maintenance ${{ env.run }} for ${{ env.site }}" --body ""
