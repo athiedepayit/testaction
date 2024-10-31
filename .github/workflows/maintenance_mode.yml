@@ -24,15 +24,17 @@ jobs:
             if: ${{ env.run == 'false' }}
             run: |
               python3 maint.py -e ${{ env.site }}
+              cat stuff/workers.tf
 
           - name: Maintenance Mode On
             if: ${{ env.run == 'true' }}
             run: |
               python3 maint.py -e ${{ env.site }} -m
-
+              cat stuff/workers.tf
 
           - name: Commit and push
             run: |
               git config user.name 'github-actions'
               git config user.email 'actions@github.com'
-              git status || grep -i "working tree clean" || git commit -am "maintenance for ${{ env.site }} ${{ env.run }}" && git push
+              git status || grep -i "working tree clean" && exit 0
+              git add . && git commit -m "maintenance for ${{ env.site }} ${{ env.run }}" && git push
