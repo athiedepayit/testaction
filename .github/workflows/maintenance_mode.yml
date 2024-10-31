@@ -48,3 +48,4 @@ jobs:
               branch=$(date +%Y-%m-%d_%H:%M:%S)_${{env.site }}_mm_${{ env.run }}
               git checkout -b $branch
               git add . && git commit -m "maintenance for ${{ env.site }} ${{ env.run }}" && git push
+              gh pr create --base master --head $branch
