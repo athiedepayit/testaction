@@ -24,6 +24,7 @@ jobs:
           run: ${{ github.event.inputs.maintenance_mode }}
           site : ${{ github.event.inputs.maintenance_site }}
           domain: ${{ github.event.inputs.domain }}
+          GH_TOKEN: ${{ github.token }}
         steps:
           - name: checkout code
             uses: actions/checkout@v4
