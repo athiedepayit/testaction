@@ -25,6 +25,7 @@ jobs:
           site : ${{ github.event.inputs.maintenance_site }}
           domain: ${{ github.event.inputs.domain }}
           GH_TOKEN: ${{ github.token }}
+          pr_body: ${{ vars.PR_BODY }}
         steps:
           - name: checkout code
             uses: actions/checkout@v4
@@ -49,4 +50,4 @@ jobs:
               branch=$(date +%Y%m%d%H%M%S)_${{env.site }}_mm_${{ env.run }}
               git checkout -b $branch
               git add . && git commit -m "maintenance for ${{ env.site }} ${{ env.run }}" && git push origin $branch
-              gh pr create --base master --head $branch --title "maintenance ${{ env.run }} for ${{ env.site }}" --body ""
+              gh pr create --base master --head $branch --title "maintenance ${{ env.run }} for ${{ env.site }}" --body "$pr_body"
