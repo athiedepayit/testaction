@@ -9,6 +9,13 @@ on:
       maintenance_mode:
         required: true
         type: boolean
+      domain:
+        type: choice
+        description: domain
+        options:
+        - s3licensing.net
+        - s3licensing.com
+        - s3gov.com
 
 jobs:
     maintenance:
@@ -16,6 +23,7 @@ jobs:
         env:
           run: ${{ github.event.inputs.maintenance_mode }}
           site : ${{ github.event.inputs.maintenance_site }}
+          domain: ${{ github.event.inputs.domain }}
         steps:
           - name: checkout code
             uses: actions/checkout@v4
@@ -23,13 +31,13 @@ jobs:
           - name: Maintenance Mode Off
             if: ${{ env.run == 'false' }}
             run: |
-              python3 maint.py -e ${{ env.site }}
+              python3 maint.py -e ${{ env.site }} -d ${{ env.domain }}
               cat stuff/workers.tf
 
           - name: Maintenance Mode On
             if: ${{ env.run == 'true' }}
             run: |
-              python3 maint.py -e ${{ env.site }} -m
+              python3 maint.py -e ${{ env.site }} -d ${{ env.domain }} -m
               cat stuff/workers.tf
 
           - name: Commit and push
