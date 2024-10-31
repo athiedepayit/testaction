@@ -30,6 +30,10 @@ jobs:
           - name: checkout code
             uses: actions/checkout@v4
 
+          - name: ensure github cli is installed
+            run: |
+              sudo apt update && sudo apt install gh -y
+
           - name: Maintenance Mode Off
             if: ${{ env.run == 'false' }}
             run: |
