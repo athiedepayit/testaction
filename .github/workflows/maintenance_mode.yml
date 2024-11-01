@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       site_input:
-        description: input a custom site, and pick a domain
+        description: input a custom site
         type: string
       site_choice:
         description: choose a site

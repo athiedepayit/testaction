@@ -74,8 +74,8 @@ def set_maint_mode(on_off, mm_site):
 
     f.close()
 
+# yes this shells out to git a bunch, but it's a decent way to avoid dependencies
 def commit(mm_site, on_off):
-    # git commit
     my_time=time.strftime('%Y%m%d%H%M%S')
     branch=f"{my_time}_{mm_site}_{on_off}"
     print(f"branch: {branch}")
