@@ -6,6 +6,72 @@ import argparse
 
 FILE_PATH="tf/cloudflare_infra/workers.tf"
 
+SITE_MAP={
+        "none": [],
+        "multitenant": [
+            "pay-vehicleapi.s3licensing.com",
+            "pay-fulfillmentapi.s3licensing.com"
+            ],
+        "ar": [
+            "ar-controlcenter.s3licensing.com",
+            "ar-licensing.s3licensing.com",
+            "ar-events.s3licensing.com",
+            "ar-agentlicensing.s3licensing.com",
+            "ar-webapi.s3licensing.com",
+            "ar-scheduledjobs.s3licensing.com"
+            ],
+        "ebci": [
+            "ebci-controlcenter.s3licensing.com",
+            "ebci-licensing.s3licensing.com",
+            "ebci-events.s3licensing.com",
+            "ebci-agentlicensing.s3licensing.com",
+            "ebci-webapi.s3licensing.com",
+            "ebci-scheduledjobs.s3licensing.com"
+            ],
+        "la": [
+            "la-controlcenter.s3licensing.com",
+            "la-agentlicensing.s3licensing.com",
+            "la-vehicles.s3licensing.com",
+            "la-scheduledjobs.s3licensing.com"
+            ],
+        "mn": [
+            "mn-controlcenter.s3licensing.com",
+            "mn-licensing.s3licensing.com",
+            "mn-events.s3licensing.com",
+            "mn-agentlicensing.s3licensing.com",
+            "mn-vehicles.s3licensing.com",
+            "mn-webapi.s3licensing.com",
+            "mn-scheduledjobs.s3licensing.com"
+            ],
+        "mo": [
+            "mo-controlcenter.s3licensing.com",
+            "mo-licensing.s3licensing.com",
+            "mo-events.s3licensing.com",
+            "mo-agentlicensing.s3licensing.com",
+            "mo-webapi.s3licensing.com",
+            "mo-scheduledjobs.s3licensing.com"
+            ],
+        "oh":[
+            "oh-controlcenter.s3licensing.com",
+            "oh-licensing.s3licensing.com",
+            "oh-events.s3licensing.com",
+            "oh-agentlicensing.s3licensing.com",
+            "oh-scheduledjobs.s3licensing.com"
+            ],
+        "or":[
+                "or-controlcenter.s3licensing.com",
+                "or-events.s3licensing.com",
+                "or-webapi.s3licensing.com",
+                "or-scheduledjobs.s3licensing.com"
+                ],
+        "maintenance" : [
+                "ar-maintenance.azurewebsites.net",
+                "ebc-maintenance.azurewebsites.net",
+                "mi-maintenance.azurewebsites.net",
+                "or-maintenance.azurewebsites.net"
+                ]
+}
+
 PR_TEMPLATE = """\
 #### Description
 
@@ -95,17 +161,7 @@ def commit(mm_site, on_off):
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1")
 
-def __main__():
-
-    if args.environment==None:
-        print("provide an environment name.")
-        sys.exit()
-
-    mm_site=args.environment
-    maint=str2bool(args.maintenance)
-
-    print(f"site: {mm_site}, maint: {maint}, path: {FILE_PATH}, commit: {args.commit}")
-
+def maint_choice(mm_site, maint):
     if maint:
         print(f"put {mm_site} into maintenance")
         in_maint=check_if_maint(mm_site)
@@ -116,6 +172,27 @@ def __main__():
         in_maint=check_if_maint(mm_site)
         if in_maint:
             set_maint_mode(False, mm_site)
+
+    if args.commit:
+        commit(mm_site, maint)
+
+
+def __main__():
+
+    if args.environment==None:
+        print("provide an environment name.")
+        sys.exit()
+
+    mm_site=args.environment
+    maint=str2bool(args.maintenance)
+    print(f"site: {mm_site}, maint: {maint}, path: {FILE_PATH}, commit: {args.commit}")
+
+    if mm_site in SITE_MAP:
+        print(f"Looping through {SITE_MAP[mm_site]}")
+        for loop_site in SITE_MAP[mm_site]:
+            maint_choice(loop_site, maint)
+    else:
+            maint_choice(mm_site, maint)
 
     if args.commit:
         commit(mm_site, maint)

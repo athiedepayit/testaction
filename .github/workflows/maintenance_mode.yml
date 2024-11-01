@@ -11,60 +11,15 @@ on:
         type: choice
         options:
           - none
-          # production
-          # multitenant
-          - pay-vehicleapi.s3licensing.com
-          - pay-fulfillmentapi.s3licensing.com
-          # ar
-          - ar-controlcenter.s3licensing.com
-          - ar-licensing.s3licensing.com
-          - ar-events.s3licensing.com
-          - ar-agentlicensing.s3licensing.com
-          - ar-webapi.s3licensing.com
-          - ar-scheduledjobs.s3licensing.com
-          # ebci
-          - ebci-controlcenter.s3licensing.com
-          - ebci-licensing.s3licensing.com
-          - ebci-events.s3licensing.com
-          - ebci-agentlicensing.s3licensing.com
-          - ebci-webapi.s3licensing.com
-          - ebci-scheduledjobs.s3licensing.com
-          # la
-          - la-controlcenter.s3licensing.com
-          - la-agentlicensing.s3licensing.com
-          - la-vehicles.s3licensing.com
-          - la-scheduledjobs.s3licensing.com
-          # mn
-          - mn-controlcenter.s3licensing.com
-          - mn-licensing.s3licensing.com
-          - mn-events.s3licensing.com
-          - mn-agentlicensing.s3licensing.com
-          - mn-vehicles.s3licensing.com
-          - mn-webapi.s3licensing.com
-          - mn-scheduledjobs.s3licensing.com
-          # mo
-          - mo-controlcenter.s3licensing.com
-          - mo-licensing.s3licensing.com
-          - mo-events.s3licensing.com
-          - mo-agentlicensing.s3licensing.com
-          - mo-webapi.s3licensing.com
-          - mo-scheduledjobs.s3licensing.com
-          # oh
-          - oh-controlcenter.s3licensing.com
-          - oh-licensing.s3licensing.com
-          - oh-events.s3licensing.com
-          - oh-agentlicensing.s3licensing.com
-          - oh-scheduledjobs.s3licensing.com
-          # or
-          - or-controlcenter.s3licensing.com
-          - or-events.s3licensing.com
-          - or-webapi.s3licensing.com
-          - or-scheduledjobs.s3licensing.com
-          # maintenance
-          - ar-maintenance.azurewebsites.net
-          - ebc-maintenance.azurewebsites.net
-          - mi-maintenance.azurewebsites.net
-          - or-maintenance.azurewebsites.net
+          - multitenant
+          - ar
+          - ebci
+          - la
+          - mn
+          - mo
+          - oh
+          - or
+          - maintenance
       maintenance_mode:
         required: true
         type: boolean
