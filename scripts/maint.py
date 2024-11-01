@@ -34,7 +34,7 @@ parser = argparse.ArgumentParser()
 #-db DATABASE -u USERNAME -p PASSWORD -size 20
 parser.add_argument("-e", "--environment", help="Environment to set maintenance mode. '.<domain>/*' will be appended.")
 parser.add_argument("-m", "--maintenance", help="Maintenance, true or false")
-parser.add_argument("-a", "--authtoken", help="Authentication token - $GITHUB_TOKEN")
+parser.add_argument("-c", "--commit", action='store_true', help="Commit?")
 args = parser.parse_args()
 
 def check_if_maint(mm_site):
@@ -74,14 +74,18 @@ def set_maint_mode(on_off, mm_site):
 
     f.close()
 
-def commit(on_off, mm_site):
+def commit(mm_site, on_off):
     # git commit
-    branch=f"{time.strftime("%Y%m%d%H%M%S")}_{mm_site}_{on_off}"
+    my_time=time.strftime('%Y%m%d%H%M%S')
+    branch=f"{my_time}_{mm_site}_{on_off}"
+    print(f"branch: {branch}")
     os.system("git config user.name 'github-actions' && git config user.email 'actions@github.com'")
     g_status=os.system("git status | grep -i 'working tree clean'")
-    if g_status>0:
+    if g_status==0:
+        print(f"git tree clean: {g_status}")
         pass
     else:
+        print("committing.")
         os.system(f"git checkout -b {branch}")
         os.system(f"git add . && git commit -m 'maintenance {on_off} for {mm_site}' && git push origin {branch}")
         os.system(f"gh pr create --base master --head {branch} --title 'maintenance {on_off} for {mm_site}' --body '{PR_TEMPLATE}'")
@@ -100,7 +104,7 @@ def __main__():
     mm_site=args.environment
     maint=str2bool(args.maintenance)
 
-    print(f"site: {mm_site}, maint: {maint}, path: {FILE_PATH}")
+    print(f"site: {mm_site}, maint: {maint}, path: {FILE_PATH}, commit: {args.commit}")
 
     if maint:
         print(f"put {mm_site} into maintenance")
@@ -112,6 +116,9 @@ def __main__():
         in_maint=check_if_maint(mm_site)
         if in_maint:
             set_maint_mode(False, mm_site)
+
+    if args.commit:
+        commit(mm_site, maint)
 
 if __name__ == "__main__":
     __main__()
