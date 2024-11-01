@@ -1,5 +1,5 @@
+---
 name: "Maintenance Mode"
-
 on:
   workflow_dispatch:
     inputs:
@@ -70,28 +70,27 @@ on:
         type: boolean
 
 jobs:
-    maintenance:
-        runs-on: ubuntu-latest
-        env:
-          run: ${{ github.event.inputs.maintenance_mode }}
-          choice: ${{ github.event.inputs.site_choice }}
-          custom: ${{ github.event.inputs.site_input }}
-          GH_TOKEN: ${{ github.token }}
-          pr_body: ${{ vars.PR_BODY }} # actions variable defined in repo settings
-        steps:
-          - name: checkout code
-            uses: actions/checkout@v4
+  maintenance:
+    runs-on: ubuntu-latest
+    env:
+      run: ${{ github.event.inputs.maintenance_mode }}
+      choice: ${{ github.event.inputs.site_choice }}
+      custom: ${{ github.event.inputs.site_input }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
 
-          - name: dependency installation
-            run: |
-              command -v gh || ( sudo apt update && sudo apt install gh -y )
+      - name: dependency installation
+        run: |
+          command -v gh || ( sudo apt update && sudo apt install gh -y )
 
-          - name: Maintenance Mode - site from list
-            if: ${{ env.custom == '' }}
-            run: |
-              python3 scripts/maint.py -e ${{ env.choice }} -m ${{ env.run }} -c
+      - name: Maintenance Mode - site from list
+        if: ${{ env.custom == '' }}
+        run: |
+          python3 scripts/maint.py -e ${{ env.choice }} -m ${{ env.run }} -c
 
-          - name: Maintenance Mode - custom input
-            if: ${{ env.choice == 'none' }}
-            run: |
-              python3 scripts/maint.py -e ${{ env.custom }} -m ${{ env.run }} -c
+      - name: Maintenance Mode - custom input
+        if: ${{ env.choice == 'none' }}
+        run: |
+          python3 scripts/maint.py -e ${{ env.custom }} -m ${{ env.run }} -c
