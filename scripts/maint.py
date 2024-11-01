@@ -8,11 +8,11 @@ FILE_PATH="tf/cloudflare_infra/workers.tf"
 
 SITE_MAP={
         "none": [],
-        "multitenant": [
+        "multitenant-prod": [
             "pay-vehicleapi.s3licensing.com",
             "pay-fulfillmentapi.s3licensing.com"
             ],
-        "ar": [
+        "ar-prod": [
             "ar-controlcenter.s3licensing.com",
             "ar-licensing.s3licensing.com",
             "ar-events.s3licensing.com",
@@ -20,7 +20,7 @@ SITE_MAP={
             "ar-webapi.s3licensing.com",
             "ar-scheduledjobs.s3licensing.com"
             ],
-        "ebci": [
+        "ebci-prod": [
             "ebci-controlcenter.s3licensing.com",
             "ebci-licensing.s3licensing.com",
             "ebci-events.s3licensing.com",
@@ -28,13 +28,13 @@ SITE_MAP={
             "ebci-webapi.s3licensing.com",
             "ebci-scheduledjobs.s3licensing.com"
             ],
-        "la": [
+        "la-prod": [
             "la-controlcenter.s3licensing.com",
             "la-agentlicensing.s3licensing.com",
             "la-vehicles.s3licensing.com",
             "la-scheduledjobs.s3licensing.com"
             ],
-        "mn": [
+        "mn-prod": [
             "mn-controlcenter.s3licensing.com",
             "mn-licensing.s3licensing.com",
             "mn-events.s3licensing.com",
@@ -43,7 +43,7 @@ SITE_MAP={
             "mn-webapi.s3licensing.com",
             "mn-scheduledjobs.s3licensing.com"
             ],
-        "mo": [
+        "mo-prod": [
             "mo-controlcenter.s3licensing.com",
             "mo-licensing.s3licensing.com",
             "mo-events.s3licensing.com",
@@ -51,20 +51,20 @@ SITE_MAP={
             "mo-webapi.s3licensing.com",
             "mo-scheduledjobs.s3licensing.com"
             ],
-        "oh":[
+        "oh-prod":[
             "oh-controlcenter.s3licensing.com",
             "oh-licensing.s3licensing.com",
             "oh-events.s3licensing.com",
             "oh-agentlicensing.s3licensing.com",
             "oh-scheduledjobs.s3licensing.com"
             ],
-        "or":[
+        "or-prod":[
                 "or-controlcenter.s3licensing.com",
                 "or-events.s3licensing.com",
                 "or-webapi.s3licensing.com",
                 "or-scheduledjobs.s3licensing.com"
                 ],
-        "maintenance" : [
+        "maintenance-prod" : [
                 "ar-maintenance.azurewebsites.net",
                 "ebc-maintenance.azurewebsites.net",
                 "mi-maintenance.azurewebsites.net",

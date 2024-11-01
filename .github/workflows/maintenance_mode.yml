@@ -11,15 +11,15 @@ on:
         type: choice
         options:
           - none
-          - multitenant
-          - ar
-          - ebci
-          - la
-          - mn
-          - mo
-          - oh
-          - or
-          - maintenance
+          - multitenant-prod
+          - ar-prod
+          - ebci-prod
+          - la-prod
+          - mn-prod
+          - mo-prod
+          - oh-prod
+          - or-prod
+          - maintenance-prod
       maintenance_mode:
         required: true
         type: boolean
