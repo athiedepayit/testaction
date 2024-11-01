@@ -154,7 +154,7 @@ def commit(mm_site, on_off):
         print("committing.")
         os.system(f"git checkout -b {branch}")
         os.system(f"git add . && git commit -m 'maintenance {on_off} for {mm_site}' && git push origin {branch}")
-        os.system(f"gh pr create --base master --head {branch} --title 'maintenance {on_off} for {mm_site}' --body '{PR_TEMPLATE}'")
+        os.system(f"gh pr create --base main --head {branch} --title 'maintenance {on_off} for {mm_site}' --body '{PR_TEMPLATE}'")
 
 
 # false/true are strings from github actions, converting/parsing here
