@@ -3,55 +3,104 @@ name: "Maintenance Mode"
 on:
   workflow_dispatch:
     inputs:
-      maintenance_site:
-        required: true
+      site_input:
+        description: input a custom site, and pick a domain
         type: string
+      site_choice:
+        description: choose a site
+        type: choice
+        options:
+          # production
+          # multitenant
+          - pay-vehicleapi.s3licensing.com
+          - pay-fulfillmentapi.s3licensing.com
+          # ar
+          - ar-controlcenter.s3licensing.com
+          - ar-licensing.s3licensing.com
+          - ar-events.s3licensing.com
+          - ar-agentlicensing.s3licensing.com
+          - ar-webapi.s3licensing.com
+          - ar-scheduledjobs.s3licensing.com
+          # ebci
+          - ebci-controlcenter.s3licensing.com
+          - ebci-licensing.s3licensing.com
+          - ebci-events.s3licensing.com
+          - ebci-agentlicensing.s3licensing.com
+          - ebci-webapi.s3licensing.com
+          - ebci-scheduledjobs.s3licensing.com
+          # la
+          - la-controlcenter.s3licensing.com
+          - la-agentlicensing.s3licensing.com
+          - la-vehicles.s3licensing.com
+          - la-scheduledjobs.s3licensing.com
+          # mn
+          - mn-controlcenter.s3licensing.com
+          - mn-licensing.s3licensing.com
+          - mn-events.s3licensing.com
+          - mn-agentlicensing.s3licensing.com
+          - mn-vehicles.s3licensing.com
+          - mn-webapi.s3licensing.com
+          - mn-scheduledjobs.s3licensing.com
+          # mo
+          - mo-controlcenter.s3licensing.com
+          - mo-licensing.s3licensing.com
+          - mo-events.s3licensing.com
+          - mo-agentlicensing.s3licensing.com
+          - mo-webapi.s3licensing.com
+          - mo-scheduledjobs.s3licensing.com
+          # oh
+          - oh-controlcenter.s3licensing.com
+          - oh-licensing.s3licensing.com
+          - oh-events.s3licensing.com
+          - oh-agentlicensing.s3licensing.com
+          - oh-scheduledjobs.s3licensing.com
+          # or
+          - or-controlcenter.s3licensing.com
+          - or-events.s3licensing.com
+          - or-webapi.s3licensing.com
+          - or-scheduledjobs.s3licensing.com
+          # maintenance
+          - ar-maintenance.azurewebsites.net
+          - ebc-maintenance.azurewebsites.net
+          - mi-maintenance.azurewebsites.net
+          - or-maintenance.azurewebsites.net
       maintenance_mode:
         required: true
         type: boolean
-      domain:
-        type: choice
-        description: domain
-        options:
-        - s3licensing.net
-        - s3licensing.com
-        - s3gov.com
 
 jobs:
     maintenance:
         runs-on: ubuntu-latest
         env:
           run: ${{ github.event.inputs.maintenance_mode }}
-          site : ${{ github.event.inputs.maintenance_site }}
-          domain: ${{ github.event.inputs.domain }}
+          choice: ${{ github.event.inputs.site_choice }}
+          custom: ${{ github.event.inputs.site_input }}
           GH_TOKEN: ${{ github.token }}
-          pr_body: ${{ vars.PR_BODY }}
+          pr_body: ${{ vars.PR_BODY }} # actions variable defined in repo settings
         steps:
           - name: checkout code
             uses: actions/checkout@v4
 
           - name: ensure github cli is installed
             run: |
-              sudo apt update && sudo apt install gh -y
+              command -v gh || ( sudo apt update && sudo apt install gh -y )
 
-          - name: Maintenance Mode Off
-            if: ${{ env.run == 'false' }}
+          - name: Maintenance Mode - site from list
+            if: ${{ env.custom == '' }}
             run: |
-              python3 maint.py -e ${{ env.site }} -d ${{ env.domain }}
-              cat stuff/workers.tf
+              python3 scripts/maint.py -e ${{ env.choice }} -m ${{ env.run }}
 
-          - name: Maintenance Mode On
-            if: ${{ env.run == 'true' }}
+          - name: Maintenance Mode - custom input
+            if: ${{ env.choice == '' }}
             run: |
-              python3 maint.py -e ${{ env.site }} -d ${{ env.domain }} -m
-              cat stuff/workers.tf
+              python3 scripts/maint.py -e ${{ env.choice }} -m ${{ env.run }}
 
           - name: Commit and push
             run: |
               git config user.name 'github-actions'
               git config user.email 'actions@github.com'
               git status | grep -i "working tree clean" && exit 0
-              branch=$(date +%Y%m%d%H%M%S)_${{env.site }}_mm_${{ env.run }}
+              branch=$(date +%Y%m%d%H%M%S)_${{env.choice }}_mm_${{ env.run }}
               git checkout -b $branch
-              git add . && git commit -m "maintenance for ${{ env.site }} ${{ env.run }}" && git push origin $branch
-              gh pr create --base master --head $branch --title "maintenance ${{ env.run }} for ${{ env.site }}" --body "$pr_body"
+              git add . && git commit -m "maintenance for ${{ env.choice }} ${{ env.run }}" && git push origin $branch
+              gh pr create --base main --head $branch --title "maintenance ${{ env.run }} for ${{ env.choice }}" --body "$pr_body"
