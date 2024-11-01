@@ -89,9 +89,9 @@ jobs:
           - name: Maintenance Mode - site from list
             if: ${{ env.custom == '' }}
             run: |
-              python3 scripts/maint.py -e ${{ env.choice }} -a ${{ github.token }} -m ${{ env.run }}
+              python3 scripts/maint.py -e ${{ env.choice }} -a ${{ github.token }} -m ${{ env.run }} -c
 
           - name: Maintenance Mode - custom input
             if: ${{ env.choice == 'none' }}
             run: |
-              python3 scripts/maint.py -e ${{ env.custom }} -a ${{ github.token }} -m ${{ env.run }}
+              python3 scripts/maint.py -e ${{ env.custom }} -a ${{ github.token }} -m ${{ env.run }} -c
