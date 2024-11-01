@@ -104,4 +104,4 @@ jobs:
               branch=$(date +%Y%m%d%H%M%S)_${{env.choice }}_mm_${{ env.run }}
               git checkout -b $branch
               git add . && git commit -m "maintenance for ${{ env.choice }} ${{ env.run }}" && git push origin $branch
-              gh pr create --base main --head $branch --title "maintenance ${{ env.run }} for ${{ env.choice }}" --body "$pr_body"
+              gh pr create --base master --head $branch --title "maintenance ${{ env.run }} for ${{ env.choice }}" --body "$pr_body"
