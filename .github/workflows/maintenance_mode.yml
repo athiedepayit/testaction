@@ -10,6 +10,7 @@ on:
         description: choose a site
         type: choice
         options:
+          - none
           # production
           # multitenant
           - pay-vehicleapi.s3licensing.com
@@ -91,9 +92,9 @@ jobs:
               python3 scripts/maint.py -e ${{ env.choice }} -m ${{ env.run }}
 
           - name: Maintenance Mode - custom input
-            if: ${{ env.choice == '' }}
+            if: ${{ env.choice == 'none' }}
             run: |
-              python3 scripts/maint.py -e ${{ env.choice }} -m ${{ env.run }}
+              python3 scripts/maint.py -e ${{ env.custom }} -m ${{ env.run }}
 
           - name: Commit and push
             run: |
