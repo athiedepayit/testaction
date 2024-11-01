@@ -6,7 +6,6 @@ module "mitest-is_maintenance" {
   # to add more sites to maintenance mode, just add them here
   patterns = [
     "pay-vehicleapi.s3licensing.com/*",
-    "test.s3gov.com/*",
     "asdf.example.com/*",
   ]
   enabled       = true
