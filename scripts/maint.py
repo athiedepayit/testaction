@@ -173,10 +173,6 @@ def maint_choice(mm_site, maint):
         if in_maint:
             set_maint_mode(False, mm_site)
 
-    if args.commit:
-        commit(mm_site, maint)
-
-
 def __main__():
 
     if args.environment==None:
