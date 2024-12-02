@@ -6,6 +6,8 @@ on:
       - opened
       - edited
       - synchronize
+  schedule:
+    - cron: '*/10 * * * *'
 env:
   DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
 
@@ -15,12 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: git checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
 
-      - name: perform merge
+      - name: rebase on default branch and force push
         run: |
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git config --global user.name "${GITHUB_ACTOR}"
