@@ -5,10 +5,6 @@ module "mitest-is_maintenance" {
   email       = "noreply@payitgov.com"
   # to add more sites to maintenance mode, just add them here
   patterns = [
-    "la-scheduledjobs.s3licensing.com/*",
-    "la-vehicles.s3licensing.com/*",
-    "la-agentlicensing.s3licensing.com/*",
-    "la-controlcenter.s3licensing.com/*",
     "mo-scheduledjobs.s3licensing.com/*",
     "mo-webapi.s3licensing.com/*",
     "mo-agentlicensing.s3licensing.com/*",
