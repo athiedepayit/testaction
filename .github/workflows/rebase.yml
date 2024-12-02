@@ -28,5 +28,5 @@ jobs:
           git checkout "$DEFAULT_BRANCH"
           git checkout "$GITHUB_HEAD_REF"
           git rebase "$DEFAULT_BRANCH"
-          git push
+          git push -f
 
