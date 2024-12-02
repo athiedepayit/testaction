@@ -9,10 +9,28 @@ on:
   schedule:
     - cron: '*/10 * * * *'
 
+env:
+  DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+
 jobs:
   merge_schedule:
     runs-on: ubuntu-latest
     steps:
+      - name: git checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: rebase on default branch and force push
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git fetch
+          git checkout "$DEFAULT_BRANCH"
+          git checkout "$GITHUB_HEAD_REF"
+          git rebase "$DEFAULT_BRANCH"
+          git push -f
+
       - uses: gr2m/merge-schedule-action@v2
         with:
           # Merge method to use. Possible values are merge, squash or
