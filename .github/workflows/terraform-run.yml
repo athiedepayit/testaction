@@ -1,0 +1,122 @@
+name: "Terraform workflow"
+
+on:
+  workflow_call:
+    inputs:
+        matrix_workspace:
+          required: true
+          type: string
+        matrix_directory:
+          required: true
+          type: string
+    secrets:
+        AZURE_CLIENT_ID:
+          required: true
+        AZURE_CLIENT_SECRET:
+          required: true
+        AZURE_SUBSCRIPTION_ID:
+          required: true
+        AZURE_TENANT_ID:
+          required: true
+
+jobs:
+
+  terraform:
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    name: Terraform plan/apply
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.matrix_directory }}
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TF_IN_AUTOMATION: 'true'
+
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: working dir
+        run: echo
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: ${{ inputs.matrix_directory }}/**
+
+      - name: Setup Terraform
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Format
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: fmt
+        run: terraform fmt -check -recursive -diff
+        continue-on-error: true
+
+      - name: Post Format
+        if: always() && github.ref != 'refs/heads/main' && (steps.fmt.outcome == 'success' || steps.fmt.outcome == 'failure') && steps.changed-files.outputs.any_changed == 'true'
+        uses: GetTerminus/terraform-pr-commenter@v3
+        with:
+          commenter_type: fmt
+          commenter_input: ${{ format('{0}{1}', steps.fmt.outputs.stdout, steps.fmt.outputs.stderr) }}
+          commenter_exitcode: ${{ steps.fmt.outputs.exitcode }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        if: steps.changed-files.outputs.any_changed == 'true'
+
+      - name: Post Init
+        if: always() && github.ref != 'refs/heads/main' && (steps.init.outcome == 'success' || steps.init.outcome == 'failure') && steps.changed-files.outputs.any_changed == 'true'
+        uses: GetTerminus/terraform-pr-commenter@v3
+        with:
+          commenter_type: init
+          commenter_input: ${{ format('{0}{1}', steps.init.outputs.stdout, steps.init.outputs.stderr) }}
+          commenter_exitcode: ${{ steps.init.outputs.exitcode }}
+
+      - name: Terraform Validate
+        id: validate
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: terraform validate
+
+      - name: Post Validate
+        if: always() && github.ref != 'refs/heads/main' && (steps.validate.outcome == 'success' || steps.validate.outcome == 'failure') && steps.changed-files.outputs.any_changed == 'true'
+        uses: GetTerminus/terraform-pr-commenter@v3
+        with:
+          commenter_type: validate
+          commenter_input: ${{ format('{0}{1}', steps.validate.outputs.stdout, steps.validate.outputs.stderr) }}
+          commenter_exitcode: ${{ steps.validate.outputs.exitcode }}
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.any_changed == 'true'
+        run: terraform plan
+
+      - name: >
+          Post Plan >> ${{ inputs.matrix_workspace }}
+        if: always() && github.ref != 'refs/heads/main' && (steps.plan.outcome == 'success' || steps.plan.outcome == 'failure') && steps.changed-files.outputs.any_changed == 'true'
+        uses: GetTerminus/terraform-pr-commenter@v3
+        env:
+          TF_WORKSPACE: ${{ format('{0}', inputs.matrix_workspace) }}
+        with:
+          commenter_type: plan
+          commenter_input: ${{ format('{0}{1}', steps.plan.outputs.stdout, steps.plan.outputs.stderr) }}
+          commenter_exitcode: ${{ steps.plan.outputs.exitcode }}
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure' && steps.changed-files.outputs.any_changed == 'true'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && steps.changed-files.outputs.any_changed == 'true'
+        run: terraform apply -auto-approve
+
