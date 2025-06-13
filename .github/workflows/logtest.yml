@@ -1,0 +1,15 @@
+---
+name: "run script"
+on:
+  workflow_dispatch:
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: run script
+        run: |
+          python3 scripts/logit.py
