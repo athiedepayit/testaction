@@ -6,10 +6,11 @@ on:
 jobs:
   maintenance:
     runs-on: ubuntu-latest
+    env:
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
     steps:
       - name: checkout code
         uses: actions/checkout@v4
 
       - name: run script
-        run: |
-          python3 scripts/logit.py
+        run: echo ${{ env.DEFAULT_BRANCH }}

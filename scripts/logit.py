@@ -12,17 +12,18 @@ COLORS = {
 }
 
 
+def colorprint(color, text):
+    mycolor = COLORS.get("green")
+    if COLORS.get(color) is not None:
+        mycolor = COLORS.get(color)
+    return f"{mycolor}{text}{COLORS.get('reset')}"
+
+
 def main():
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    logging.log(DEBUG, f"{COLORS.get('green')}Updating Origin One{COLORS.get('reset')}")
-    logging.log(
-        DEBUG,
-        f"Without colors: {COLORS.get('red')}Red Logging asdf{COLORS.get('reset')}",
-    )
-    logging.log(
-        DEBUG,
-        f"Without colors: {COLORS.get('yellow')}Yellow Logging{COLORS.get('reset')}",
-    )
+    logging.log(DEBUG, colorprint("green", "green text!"))
+    logging.log(DEBUG, colorprint("yellow", "yellow text!"))
+    logging.log(DEBUG, colorprint("red", "red text!"))
 
 
 if __name__ == "__main__":
