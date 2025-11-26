@@ -1,0 +1,52 @@
+name: Shift Traffic on CF Loadbalancer
+
+on:
+  workflow_dispatch:
+    inputs:
+      scaleup:
+        description: scale up
+        type: boolean
+        default: true
+      origin:
+        description: Origin to shift traffic to
+        type: string
+        required: true
+        default: "origin"
+      cluster:
+        description: Cluster name
+        type: choice
+        required: true
+        options:
+          - test
+          - dev
+          - staging
+          - system
+          - prod
+      exitcode:
+        description: test exit code
+        default: "0"
+
+jobs:
+  trafficshift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Traffic Shift
+        id: shift
+        run: |
+          echo "shifting to ${{ inputs.origin }}"
+          exit ${{ inputs.exitcode }}
+
+      - name: send slack
+        if: steps.shift.outcome == 'failure'
+        run: |
+          echo "sending slack, since step failed"
+
+      - name: Scale Applications in Cluster
+        if: ${{ inputs.scaleup && steps.shift.outcome == 'failure' }}
+        shell: bash
+        run: |
+          echo "Scaling"
+
