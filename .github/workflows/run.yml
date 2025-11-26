@@ -45,7 +45,7 @@ jobs:
           echo "sending slack, since step failed"
 
       - name: Scale Applications in Cluster
-        if: ${{ inputs.scaleup && steps.shift.outcome == 'failure' }}
+        if: ${{ inputs.scaleup && steps.shift.outcome == 'success' }}
         shell: bash
         run: |
           echo "Scaling"
